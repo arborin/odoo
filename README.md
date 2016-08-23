@@ -4,12 +4,12 @@
 
 This script generates odoo module template
 
-You can specify some options in interactive mode
+You can specify some options in interactive mode</br>
 
 Base template structure:
     
 <ul>
-    <li>/module name</li>
+    <p>/module name</p>
     <ul>
         <li>__init__.py</li>
         <li>__openerp__.py</li>
