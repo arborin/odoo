@@ -15,7 +15,7 @@ Base template structure:
 &nbsp;&nbsp;&nbsp;&nbsp;__openerp__.py</br>
 &nbsp;&nbsp;&nbsp;&nbsp;module_name.py</br>
 &nbsp;&nbsp;&nbsp;&nbsp;module_name_view.xml</br>
-&nbsp;&nbsp;&nbsp;&nbsp;<b>/security<b></br>
+&nbsp;&nbsp;&nbsp;&nbsp;<b>/security</b></br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;module_name_security.xml</br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ir.model.access.csv</br>
 
