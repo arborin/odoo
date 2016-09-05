@@ -10,15 +10,21 @@ print('-'*50)
 print("""
     Module base structure
     
-    /module_dir
+    module_dir/
         | __init__.py
         | __openerp__.py
         | module_name.py
         | module_name_view.xml
-        | /security
+        | security/
         |    | module_name_security.xml
         |    | ir.model.access.csv
+        | report/
+        |    | __init__.py
+        |    | module_name_report_view.xml
+        |    | module_name_report.py
+        |    | module_name_report.mako
       """)
+
 print('-'*50)
 module_name = input("1. Enter module name: ").lower()
 module_name = module_name
@@ -111,7 +117,7 @@ openerp_file_content = {
 	'author': module_author,
 	'website': "http://example.com",
 	'depends': ['base'],
-	'data': ['{}_view.xml'.format(file_name)],
+	'data': ['{}_view.xml'.format(file_name),'{}_report_view.xml'.format(module_name)],
 	'demo': [],
 	'installable': True,
 	'auto_install': False,
@@ -204,12 +210,78 @@ class %s(osv.Model):
 
 python_file_content = python_file_content % (class_name, model_name)
 file = open(os.path.join(path, python_file), 'w+')
-
 file.write(str(python_file_content))
+
+# Report folder
+report_dir = os.path.join(path,"report")
+
+if not os.path.exists(report_dir):
+	os.makedirs(report_dir)
+
+
+init_py_content = "import {}_report".format(module_name)
+file = open(os.path.join(report_dir, "__init__.py"), 'w+')
+file.write(str(init_py_content))
+file.close()
+
+report_py_content = """from openerp.addons.report_webkit.webkit_report import webkit_report_extender
+from openerp import SUPERUSER_ID
+import time
+from openerp.osv.osv import except_osv
+
+
+from datetime import datetime
+
+@webkit_report_extender("%s.form_view_id")
+def extend_demo(pool, cr, uid, localcontext, context):
+        
+    localcontext.update({
+        "time": "today"    
+    })
+    """
+report_py_content = report_py_content % module_name
+file = open(os.path.join(report_dir, dir_name+"_report.py"), 'w+')
+file.write(str(report_py_content))
+file.close()
+
+
+report_xml_content = """<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <report auto="False"
+                header="False"
+                id="{model}_view_report"
+                model="{model}" name="{model}"
+                file="{model}/report/{model}_report.mako"
+                string="Report"
+                report_type="webkit"/>
+    </data>
+</openerp>"""
+
+report_xml_content = report_xml_content.format(model=model_name)
+file = open(os.path.join(report_dir, dir_name+"_report_view.xml"), 'w+')
+file.write(str(report_xml_content))
+file.close()
+
+
+report_mako_content = """{<html>
+    % for o in objects:
+        ${o.name}
+        ${time}
+    % endfor
+</html>
+}"""
+
+file = open(os.path.join(report_dir, dir_name+"_report.mako"), 'w+')
+file.write(str(report_mako_content))
+file.close()
+
+
+
 print('-'*43)
 print("Module successfully created!")
 print('-'*43)
-input("Press any key to exit....")
+input("Press Enter to exit....")
  
 
 
